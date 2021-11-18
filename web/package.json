@@ -25,6 +25,7 @@
   },
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
+  "homepage": "https://github.com/tbounsiar/expraptor/web#readme",
   "dependencies": {
     "@expraptor/core": "1.0.0"
   }

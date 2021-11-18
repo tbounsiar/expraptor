@@ -15,10 +15,14 @@
     "directory": "core"
   },
   "bugs": {
-    "url": "https://github.com/tbounsiar/expraptor-core/issues"
+    "url": "https://github.com/tbounsiar/expraptor/issues"
   },
-  "author": "Tahar BOUNSIAR <tbounsiar@gmail.com> (https://github.com/tbounsiar)",
+  "author": {
+    "email": "tbounsiar@gmail.com",
+    "name": "Tahar BOUNSIAR",
+    "url": "https://github.com/tbounsiar"
+  },
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
-  "homepage": "https://github.com/tbounsiar/expraptor-core#readme"
+  "homepage": "https://github.com/tbounsiar/expraptor/core#readme"
 }
