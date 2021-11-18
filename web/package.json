@@ -1,0 +1,31 @@
+{
+  "name": "@expraptor/web",
+  "version": "1.0.5",
+  "description": "Simple library to deploy node express using typescript decorators",
+  "license": "MIT",
+  "keywords": [
+    "node",
+    "express",
+    "web",
+    "decorator",
+    "annotation"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tbounsiar/expraptor.git",
+    "directory": "web"
+  },
+  "bugs": {
+    "url": "https://github.com/tbounsiar/expraptor-web/issues"
+  },
+  "author": {
+    "email": "tbounsiar@gmail.com",
+    "name": "Tahar BOUNSIAR",
+    "url": "https://github.com/tbounsiar"
+  },
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "dependencies": {
+    "@expraptor/core": "1.0.0"
+  }
+}

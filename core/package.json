@@ -1,0 +1,24 @@
+{
+  "name": "@expraptor/core",
+  "version": "1.0.0",
+  "description": "Expraptor core library",
+  "license": "MIT",
+  "keywords": [
+    "node",
+    "express",
+    "expraptor",
+    "core"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tbounsiar/expraptor.git",
+    "directory": "core"
+  },
+  "bugs": {
+    "url": "https://github.com/tbounsiar/expraptor-core/issues"
+  },
+  "author": "Tahar BOUNSIAR <tbounsiar@gmail.com> (https://github.com/tbounsiar)",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "homepage": "https://github.com/tbounsiar/expraptor-core#readme"
+}

@@ -1,0 +1,124 @@
+"use strict";
+var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
+    if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
+        if (ar || !(i in from)) {
+            if (!ar) ar = Array.prototype.slice.call(from, 0, i);
+            ar[i] = from[i];
+        }
+    }
+    return to.concat(ar || Array.prototype.slice.call(from));
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var core_1 = require("@expraptor/core");
+var template_1 = require("../core/template");
+var utils_1 = require("../core/utils");
+var path_to_regexp_1 = require("path-to-regexp");
+var http_1 = require("./http");
+var auth_1 = require("./auth");
+var Configurator = /** @class */ (function () {
+    function Configurator(application) {
+        this.application = application;
+        this._httpSecurity = new http_1.HttpSecurity();
+        this._authenticationBuilder = new auth_1.AuthenticationBuilder();
+    }
+    Configurator.instance = function (application) {
+        return new Configurator(application);
+    };
+    Configurator.prototype.httpSecurity = function () {
+        return this._httpSecurity;
+    };
+    Configurator.prototype.buildAuth = function () {
+        return this._authenticationBuilder;
+    };
+    Configurator.prototype.secure = function (route, path) {
+        var permission = { authenticated: false, authorization: "", permit: false };
+        var routePath = "" + path + (0, utils_1.getPath)(route.path);
+        var middlewareText = template_1.forbiddenTemplate;
+        var matchers = (0, utils_1.getMatchers)(this._httpSecurity, routePath, route.method);
+        if (matchers.length > 0) {
+            var permitAll = matchers.find(function (matcher) { return matcher.permissions().indexOf(http_1.RequestMatcher.PERMIT_ALL) !== -1; });
+            if (permitAll) {
+                if (route.authorization) {
+                    permission.authorization = (0, utils_1.getAuthorization)(route);
+                }
+                else {
+                    // No need to add security middleware
+                    permission.permit = true;
+                    return;
+                }
+            }
+            else {
+                (0, utils_1.updatePermission)(permission, matchers);
+            }
+        }
+        if (permission.authenticated || permission.authorization) {
+            var authorizedText = permission.authorization ? (0, template_1.authorizedTemplate)(permission.authorization) : "";
+            middlewareText = (0, template_1.middlewareTemplate)(this, authorizedText, this._authenticationBuilder.authenticateType());
+        }
+        var middleware = (0, utils_1.getMiddleware)(this._authenticationBuilder, middlewareText);
+        if (!route.middlewares) {
+            route.middlewares = [];
+        }
+        route.middlewares.splice(0, 0, middleware);
+    };
+    /**
+     * Enable security after configuration
+     */
+    Configurator.prototype.enable = function (web) {
+        var _this = this;
+        if (web === void 0) { web = false; }
+        this._authenticationBuilder.enable(this.application);
+        this._httpSecurity.enable(this.application);
+        if (!web) {
+            Object.values(core_1.HttpMethod).forEach(function (method) {
+                var oldMethod = _this.application[method];
+                _this.application[method] = function () {
+                    var args = [];
+                    for (var _i = 0; _i < arguments.length; _i++) {
+                        args[_i] = arguments[_i];
+                    }
+                    if (typeof args[0] === "string" && typeof args[1] === "function") {
+                        var middleware = _this.middleware(args[0], method);
+                        if (middleware) {
+                            args.splice(1, 0, middleware);
+                        }
+                    }
+                    return oldMethod.call.apply(oldMethod, __spreadArray([_this.application], args, false));
+                };
+            });
+        }
+    };
+    Configurator.prototype.middleware = function (path, method) {
+        if (!this._authenticationBuilder.isStateless()) {
+            var formLogin = this._authenticationBuilder.formLogin();
+            var loginPageRegex = (0, path_to_regexp_1.pathToRegexp)(formLogin.loginPage() || auth_1.FormLogin.DEFAULT_LOGIN_PAGE);
+            var loginUrlRegex = (0, path_to_regexp_1.pathToRegexp)(formLogin.loginUrl() || auth_1.FormLogin.DEFAULT_LOGIN_URL);
+            var logoutUrlRegex = (0, path_to_regexp_1.pathToRegexp)(formLogin.logoutUrl() || auth_1.FormLogin.DEFAULT_LOGOUT_URL);
+            if (loginPageRegex.test(path) || loginUrlRegex.test(path) || logoutUrlRegex.test(path)) {
+                return null;
+            }
+        }
+        var permission = { authenticated: false, authorization: "", permit: false };
+        var routePath = path;
+        var middlewareText = template_1.forbiddenTemplate;
+        var matchers = (0, utils_1.getMatchers)(this._httpSecurity, routePath, method);
+        if (matchers.length > 0) {
+            var permitAll = matchers.find(function (matcher) { return matcher.permissions().indexOf(http_1.RequestMatcher.PERMIT_ALL) !== -1; });
+            if (permitAll) {
+                // no need to add security middleware
+                return null;
+            }
+            else {
+                (0, utils_1.updatePermission)(permission, matchers);
+            }
+        }
+        if (permission.authenticated || permission.authorization) {
+            var authorizedText = permission.authorization ? (0, template_1.authorizedTemplate)(permission.authorization) : "";
+            middlewareText = (0, template_1.middlewareTemplate)(this, authorizedText, this._authenticationBuilder.authenticateType());
+        }
+        var middleware = (0, utils_1.getMiddleware)(this._authenticationBuilder, middlewareText);
+        return middleware;
+    };
+    return Configurator;
+}());
+exports.default = Configurator;
