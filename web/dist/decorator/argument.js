@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Next = exports.Response = exports.Request = exports.Param = exports.BodyParam = exports.Path = exports.QueryParam = exports.Header = exports.RequestBody = void 0;
+exports.Response = exports.Request = exports.Param = exports.BodyParam = exports.Path = exports.QueryParam = exports.Header = exports.RequestBody = void 0;
 var core_1 = require("@expraptor/core");
 var util_1 = require("../core/util");
 /**
@@ -97,17 +97,6 @@ function Response() {
     };
 }
 exports.Response = Response;
-/**
- * Decorator which indicates that a method parameter should be bound to a next function.
- * Supported for decorated handler methods.
- * @constructor
- */
-function Next() {
-    return function (target, propertyKey, parameterIndex) {
-        argument(target, propertyKey, parameterIndex, core_1.ArgumentType.NEXT);
-    };
-}
-exports.Next = Next;
 function argument(target, propertyKey, index, type, key) {
     if (!key) {
         var names = (0, util_1.getParamNames)(target[propertyKey]);

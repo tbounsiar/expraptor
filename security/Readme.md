@@ -5,7 +5,7 @@
 ## Installation
 
 ```sh
-$ npm install @expraptor-security
+$ npm install @expraptor/security
 ```
 
 ## Usage

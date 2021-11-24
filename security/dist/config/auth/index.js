@@ -22,7 +22,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.token = exports.WebAuthenticationProvider = exports.SessionAuthenticationProvider = exports.MemoryAuthenticator = exports.DigestWebAuthenticationProvider = exports.BasicWebAuthenticationProvider = exports.AuthErrorHandlingImpl = exports.RequestAuthenticationImpl = exports.FormLogin = exports.AuthenticationBuilder = void 0;
+exports.token = exports.WWWAuthenticationProvider = exports.SessionAuthenticationProvider = exports.MemoryAuthenticator = exports.DigestWebAuthenticationProvider = exports.BasicWebAuthenticationProvider = exports.AuthErrorHandlingImpl = exports.RequestAuthenticationImpl = exports.FormLogin = exports.AuthenticationBuilder = void 0;
 var formLogin_1 = __importDefault(require("./formLogin"));
 exports.FormLogin = formLogin_1.default;
 var authenticationBuilder_1 = __importDefault(require("./authenticationBuilder"));
@@ -39,7 +39,7 @@ var memoryAuthenticator_1 = __importDefault(require("./impl/memoryAuthenticator"
 exports.MemoryAuthenticator = memoryAuthenticator_1.default;
 var sessionAuthenticationProvider_1 = __importDefault(require("./impl/sessionAuthenticationProvider"));
 exports.SessionAuthenticationProvider = sessionAuthenticationProvider_1.default;
-var webAuthenticationProvider_1 = __importDefault(require("./impl/webAuthenticationProvider"));
-exports.WebAuthenticationProvider = webAuthenticationProvider_1.default;
+var wwwAuthenticationProvider_1 = __importDefault(require("./impl/wwwAuthenticationProvider"));
+exports.WWWAuthenticationProvider = wwwAuthenticationProvider_1.default;
 var token = __importStar(require("./token"));
 exports.token = token;

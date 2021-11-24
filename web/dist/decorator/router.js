@@ -1,12 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Router = void 0;
+exports.router = void 0;
 /**
  *
  * @param {@link RouterOption} router options
  * @constructor
  */
-function Router(option) {
+function router(option) {
     return function (target) {
         if (!target.prototype._router$) {
             target.prototype._router$ = {};
@@ -15,4 +15,4 @@ function Router(option) {
         target.prototype._router$.middlewares = option.middlewares;
     };
 }
-exports.Router = Router;
+exports.router = router;

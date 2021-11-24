@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getMiddleware = exports.getMatchers = exports.getAuthorization = exports.updatePermission = exports.getPath = void 0;
+exports.generate = exports.getMiddleware = exports.getMatchers = exports.getAuthorization = exports.updatePermission = exports.getPath = void 0;
 var core_1 = require("@expraptor/core");
 var path_to_regexp_1 = require("path-to-regexp");
 var http_1 = require("../config/http");
@@ -8,7 +8,7 @@ function getPath(path) {
     if (path.startsWith("/")) {
         return path;
     }
-    return "/" + path;
+    return "/".concat(path);
 }
 exports.getPath = getPath;
 function updatePermission(permission, matchers) {
@@ -19,7 +19,7 @@ function updatePermission(permission, matchers) {
                 permission.authenticated = true;
             }
             else {
-                permissions.push("authentication." + p);
+                permissions.push("authentication.".concat(p));
             }
         });
     });
@@ -34,18 +34,18 @@ function getAuthorization(route) {
         route.arguments.forEach(function (argument) {
             switch (argument.type) {
                 case core_1.ArgumentType.PATH:
-                    args[argument.key] = "request.params[\"" + argument.key + "\"]";
+                    args[argument.key] = "request.params[\"".concat(argument.key, "\"]");
                     break;
                 case core_1.ArgumentType.QUERY:
                 case core_1.ArgumentType.BODY:
-                    args[argument.key] = "request[\"" + argument.type + "\"][\"" + argument.key + "\"]";
+                    args[argument.key] = "request[\"".concat(argument.type, "\"][\"").concat(argument.key, "\"]");
                     break;
                 case core_1.ArgumentType.PARAM:
                     var key = route.method === core_1.HttpMethod.POST ? "body" : "query";
-                    args[argument.key] = "request[\"" + key + "\"][\"" + argument.key + "\"]";
+                    args[argument.key] = "request[\"".concat(key, "\"][\"").concat(argument.key, "\"]");
                     break;
                 case core_1.ArgumentType.HEADER:
-                    args[argument.key] = "request.get(\"" + argument.key + "\")";
+                    args[argument.key] = "request.get(\"".concat(argument.key, "\")");
                     break;
                 case core_1.ArgumentType.REQUEST_BODY:
                     args[argument.key] = "request.body";
@@ -56,11 +56,8 @@ function getAuthorization(route) {
                 case core_1.ArgumentType.RESPONSE:
                     args[argument.key] = "response";
                     break;
-                case core_1.ArgumentType.NEXT:
-                    args[argument.key] = "next";
-                    break;
                 default:
-                    throw Error("Unknown argument " + argument.key + " type");
+                    throw Error("Unknown argument ".concat(argument.key, " type"));
                     break;
             }
         });
@@ -75,9 +72,9 @@ function getAuthorization(route) {
             regExp.lastIndex++;
         }
         if (!args[result[1]]) {
-            throw Error("Unknown " + result[1] + " args");
+            throw Error("Unknown ".concat(result[1], " args"));
         }
-        authorization = authorization.replace("#" + result[1], args[result[1]]);
+        authorization = authorization.replace("#".concat(result[1]), args[result[1]]);
         result = regExp.exec(authorization);
     }
     return authorization;
@@ -87,7 +84,7 @@ function getMatchers(httpSecurity, path, method) {
     return httpSecurity.authorize().matchers().filter(function (matcher) {
         var regex = (0, path_to_regexp_1.pathToRegexp)(matcher.regex());
         if (regex.test(path)) {
-            if (matcher.methods() && matcher.methods().length > 0) {
+            if (method && matcher.methods() && matcher.methods().length > 0) {
                 // @ts-ignore
                 if (matcher.methods().includes(method)) {
                     return true;
@@ -107,3 +104,13 @@ function getMiddleware(authenticationBuilder, middlewareText) {
     return middleware;
 }
 exports.getMiddleware = getMiddleware;
+function generate(length) {
+    var result = "";
+    var characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    var charactersLength = characters.length;
+    for (var i = 0; i < length; i++) {
+        result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    return result;
+}
+exports.generate = generate;

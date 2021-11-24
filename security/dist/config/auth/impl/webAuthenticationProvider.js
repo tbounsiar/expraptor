@@ -1,17 +1,29 @@
 "use strict";
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+var wwwAuthenticationProvider_1 = __importDefault(require("./wwwAuthenticationProvider"));
 var requestAuthenticationImpl_1 = __importDefault(require("./requestAuthenticationImpl"));
-/**
- * Class for WWW-Authenticate implementation
- */
-var WebAuthenticationProvider = /** @class */ (function () {
-    function WebAuthenticationProvider(authenticationBuilder) {
-        this.authenticationBuilder = authenticationBuilder;
-        this._realm = "@expraptor/security Application";
-        this._proxy = false;
+var WebAuthenticationProvider = /** @class */ (function (_super) {
+    __extends(WebAuthenticationProvider, _super);
+    function WebAuthenticationProvider() {
+        return _super !== null && _super.apply(this, arguments) || this;
     }
     WebAuthenticationProvider.prototype.getAuthentication = function (request) {
         var user = this.getUser(request);
@@ -19,33 +31,6 @@ var WebAuthenticationProvider = /** @class */ (function () {
             throw new Error("Need Authentication");
         }
         return new requestAuthenticationImpl_1.default(this.authenticate(user));
-    };
-    /**
-     * Set WWW-Authenticate realm
-     * @param {string} realm realm value
-     * @return WebAuthenticationProvider
-     */
-    WebAuthenticationProvider.prototype.realm = function (realm) {
-        this._realm = realm;
-        return this;
-    };
-    /**
-     * Activate WWW-Authenticate proxy authentication
-     */
-    WebAuthenticationProvider.prototype.proxy = function () {
-        this._proxy = true;
-        return this;
-    };
-    /**
-     * Get Authentication Builder config
-     */
-    WebAuthenticationProvider.prototype.and = function () {
-        return this.authenticationBuilder;
-    };
-    WebAuthenticationProvider.prototype.getAskHeader = function () {
-        var key = (this._proxy ? "Proxy" : "WWW") + "-Authenticate";
-        var value = this.getAskHeaderValue();
-        return [key, value];
     };
     WebAuthenticationProvider.prototype.authenticate = function (user) {
         var authentication;
@@ -62,13 +47,6 @@ var WebAuthenticationProvider = /** @class */ (function () {
         }
         return this.parse(authorization, request);
     };
-    WebAuthenticationProvider.prototype.getAuthorization = function (request) {
-        var authorization = request.headers[(this._proxy ? "proxy-" : "") + "authorization"];
-        if (typeof authorization !== "string") {
-            return undefined;
-        }
-        return authorization;
-    };
     return WebAuthenticationProvider;
-}());
+}(wwwAuthenticationProvider_1.default));
 exports.default = WebAuthenticationProvider;

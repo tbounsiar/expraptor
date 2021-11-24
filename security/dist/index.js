@@ -21,8 +21,10 @@ var __importStar = (this && this.__importStar) || function (mod) {
 var config = __importStar(require("./config"));
 var decorator_1 = require("./decorator");
 var auth_1 = require("./config/auth");
-function security(application) {
-    return config.Configurator.instance(application);
+function security(application, change, test) {
+    if (change === void 0) { change = true; }
+    if (test === void 0) { test = true; }
+    return new config.Configurator(application, change, test);
 }
 security.Configurator = config.Configurator;
 security.PreAuthorize = decorator_1.PreAuthorize;

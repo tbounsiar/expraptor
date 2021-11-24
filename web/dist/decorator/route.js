@@ -11,7 +11,7 @@ var __assign = (this && this.__assign) || function () {
     return __assign.apply(this, arguments);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CONNECT = exports.TRACE = exports.HEAD = exports.OPTIONS = exports.DELETE = exports.PATCH = exports.PUT = exports.POST = exports.GET = exports.Route = void 0;
+exports.trace = exports.put = exports.post = exports.patch = exports.options = exports.head = exports.get = exports.del = exports.route = void 0;
 var core_1 = require("@expraptor/core");
 var core_2 = require("../core");
 /**
@@ -19,90 +19,81 @@ var core_2 = require("../core");
  * @param {@link RouteOption} HTTP mapping option
  * @constructor
  */
-function Route(option) {
+function route(option) {
     return function (target, propertyKey, descriptor) {
         (0, core_2.setHandler)(option, target, propertyKey, descriptor);
     };
 }
-exports.Route = Route;
-/**
- * Decorator for mapping HTTP GET requests onto specific handler methods.
- * @param {RouteOption} option HTTP GET mapping option
- * @constructor
- */
-function GET(option) {
-    return Route(__assign(__assign({}, option), { method: core_1.HttpMethod.GET }));
-}
-exports.GET = GET;
-/**
- * Decorator for mapping HTTP POST requests onto specific handler methods.
- * @param {RouteOption} option HTTP POST mapping option
- * @constructor
- */
-function POST(option) {
-    return Route(__assign(__assign({}, option), { method: core_1.HttpMethod.POST }));
-}
-exports.POST = POST;
-/**
- * Decorator for mapping HTTP PUT requests onto specific handler methods.
- * @param {RouteOption} option HTTP PUT mapping option
- * @constructor
- */
-function PUT(option) {
-    return Route(__assign(__assign({}, option), { method: core_1.HttpMethod.PUT }));
-}
-exports.PUT = PUT;
-/**
- * Decorator for mapping HTTP PATCH requests onto specific handler methods.
- * @param {RouteOption} option HTTP PATCH mapping option
- * @constructor
- */
-function PATCH(option) {
-    return Route(__assign(__assign({}, option), { method: core_1.HttpMethod.PATCH }));
-}
-exports.PATCH = PATCH;
+exports.route = route;
 /**
  * Decorator for mapping HTTP DELETE requests onto specific handler methods.
  * @param {RouteOption} option HTTP DELETE mapping option
  * @constructor
  */
-function DELETE(option) {
-    return Route(__assign(__assign({}, option), { method: core_1.HttpMethod.DELETE }));
+function del(option) {
+    return route(__assign(__assign({}, option), { method: core_1.HttpMethod.DELETE }));
 }
-exports.DELETE = DELETE;
+exports.del = del;
 /**
- * Decorator for mapping HTTP OPTIONS requests onto specific handler methods.
- * @param {import("@expraptor/core").RouteOption} option HTTP OPTIONS mapping option
+ * Decorator for mapping HTTP GET requests onto specific handler methods.
+ * @param {RouteOption} option HTTP GET mapping option
  * @constructor
  */
-function OPTIONS(option) {
-    return Route(__assign(__assign({}, option), { method: core_1.HttpMethod.OPTIONS }));
+function get(option) {
+    return route(__assign(__assign({}, option), { method: core_1.HttpMethod.GET }));
 }
-exports.OPTIONS = OPTIONS;
+exports.get = get;
 /**
  * Decorator for mapping HTTP HEAD requests onto specific handler methods.
  * @param {RouteOption} option HTTP HEAD mapping option
  * @constructor
  */
-function HEAD(option) {
-    return Route(__assign(__assign({}, option), { method: core_1.HttpMethod.HEAD }));
+function head(option) {
+    return route(__assign(__assign({}, option), { method: core_1.HttpMethod.HEAD }));
 }
-exports.HEAD = HEAD;
+exports.head = head;
+/**
+ * Decorator for mapping HTTP OPTIONS requests onto specific handler methods.
+ * @param {import("@expraptor/core").RouteOption} option HTTP OPTIONS mapping option
+ * @constructor
+ */
+function options(option) {
+    return route(__assign(__assign({}, option), { method: core_1.HttpMethod.OPTIONS }));
+}
+exports.options = options;
+/**
+ * Decorator for mapping HTTP PATCH requests onto specific handler methods.
+ * @param {RouteOption} option HTTP PATCH mapping option
+ * @constructor
+ */
+function patch(option) {
+    return route(__assign(__assign({}, option), { method: core_1.HttpMethod.PATCH }));
+}
+exports.patch = patch;
+/**
+ * Decorator for mapping HTTP POST requests onto specific handler methods.
+ * @param {RouteOption} option HTTP POST mapping option
+ * @constructor
+ */
+function post(option) {
+    return route(__assign(__assign({}, option), { method: core_1.HttpMethod.POST }));
+}
+exports.post = post;
+/**
+ * Decorator for mapping HTTP PUT requests onto specific handler methods.
+ * @param {RouteOption} option HTTP PUT mapping option
+ * @constructor
+ */
+function put(option) {
+    return route(__assign(__assign({}, option), { method: core_1.HttpMethod.PUT }));
+}
+exports.put = put;
 /**
  * Decorator for mapping HTTP TRACE requests onto specific handler methods.
  * @param {RouteOption} option HTTP TRACE mapping option
  * @constructor
  */
-function TRACE(option) {
-    return Route(__assign(__assign({}, option), { method: core_1.HttpMethod.TRACE }));
+function trace(option) {
+    return route(__assign(__assign({}, option), { method: core_1.HttpMethod.TRACE }));
 }
-exports.TRACE = TRACE;
-/**
- * Decorator for mapping HTTP CONNECT requests onto specific handler methods.
- * @param {import("@expraptor/core").RouteOption} option HTTP CONNECT mapping option
- * @constructor
- */
-function CONNECT(option) {
-    return Route(__assign(__assign({}, option), { method: core_1.HttpMethod.CONNECT }));
-}
-exports.CONNECT = CONNECT;
+exports.trace = trace;

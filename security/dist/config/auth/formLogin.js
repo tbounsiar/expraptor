@@ -6,25 +6,32 @@ var FormLogin = /** @class */ (function () {
         this.authenticationBuilder = authenticationBuilder;
     }
     FormLogin.prototype.loginPage = function (loginPage) {
-        if (loginPage) {
-            this._loginPage = loginPage;
-            return this;
+        if (loginPage === undefined) {
+            return this._loginPage || FormLogin.DEFAULT_LOGIN_PAGE;
         }
-        return this._loginPage;
+        this._loginPage = loginPage;
+        return this;
     };
     FormLogin.prototype.loginUrl = function (loginUrl) {
-        if (loginUrl) {
-            this._loginUrl = loginUrl;
-            return this;
+        if (loginUrl === undefined) {
+            return this._loginUrl;
         }
-        return this._loginUrl;
+        this._loginUrl = loginUrl;
+        return this;
     };
     FormLogin.prototype.logoutUrl = function (logoutUrl) {
-        if (logoutUrl) {
-            this._logoutUrl = logoutUrl;
-            return this;
+        if (logoutUrl === undefined) {
+            return this._logoutUrl;
         }
-        return this._logoutUrl;
+        this._logoutUrl = logoutUrl;
+        return this;
+    };
+    FormLogin.prototype.redirectUrl = function (redirectUrl) {
+        this._redirectUrl = redirectUrl;
+        return this;
+    };
+    FormLogin.prototype.and = function () {
+        return this.authenticationBuilder;
     };
     FormLogin.prototype.enable = function (application) {
         var _this = this;
@@ -36,16 +43,21 @@ var FormLogin = /** @class */ (function () {
                 // @ts-ignore
                 var requestAuthentication = authenticationProvider_1.getAuthentication(request);
                 if (requestAuthentication.isAuthenticated()) {
-                    if (request.query.from) {
-                        response.redirect(request.query.from);
+                    var redirect = "/";
+                    if (_this._redirectUrl) {
+                        redirect = _this._redirectUrl;
                     }
-                    else {
-                        response.redirect("/");
+                    else if (request.query.from) {
+                        redirect = request.query.from;
                     }
+                    response.redirect(redirect);
                 }
                 else {
                     var loginUrl = _this._loginUrl || FormLogin.DEFAULT_LOGIN_URL;
-                    response.send((0, template_1.loginTemplate)(loginUrl + "?from=" + request.query.from));
+                    if (!_this._redirectUrl && request.query.from) {
+                        loginUrl += "?from=" + request.query.from;
+                    }
+                    response.send((0, template_1.loginTemplate)(loginUrl));
                 }
             });
         }
@@ -60,22 +72,29 @@ var FormLogin = /** @class */ (function () {
                 }
                 var authentication = authenticator_1.authenticate(request.body.login, request.body.password);
                 authenticationProvider_2.setAuthentication(request, authentication);
-                var url = request.query.from;
-                response.redirect(url);
+                var redirect = "/";
+                if (_this._redirectUrl) {
+                    redirect = _this._redirectUrl;
+                }
+                else if (request.query.from) {
+                    redirect = request.query.from;
+                }
+                response.redirect(redirect);
             });
         }
         // Use default login url
         if (!this._logoutUrl) {
             var authenticationProvider_3 = this.authenticationBuilder.authenticationProvider();
+            var redirect_1 = "/";
+            if (this._redirectUrl) {
+                redirect_1 = this._redirectUrl;
+            }
             // @ts-ignore
             application.post(FormLogin.DEFAULT_LOGOUT_URL, function (request, response) {
                 authenticationProvider_3.setAuthentication(request, null);
-                response.redirect("/");
+                response.redirect(redirect_1);
             });
         }
-    };
-    FormLogin.prototype.and = function () {
-        return this.authenticationBuilder;
     };
     FormLogin.DEFAULT_LOGIN_PAGE = "/login";
     FormLogin.DEFAULT_LOGIN_URL = "/auth/login";

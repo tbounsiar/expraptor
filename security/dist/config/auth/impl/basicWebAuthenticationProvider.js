@@ -18,8 +18,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var webAuthenticationProvider_1 = __importDefault(require("./webAuthenticationProvider"));
 var crypto_utils_1 = require("../../../core/crypto-utils");
+var webAuthenticationProvider_1 = __importDefault(require("./webAuthenticationProvider"));
 var CREDENTIALS_REGEXP = /^basic\s(.*)/i;
 var USER_PASS_REGEXP = /^([^:]*):(.*)$/;
 /**
@@ -33,7 +33,7 @@ var BasicWebAuthenticationProvider = /** @class */ (function (_super) {
         return _this;
     }
     BasicWebAuthenticationProvider.prototype.getAskHeaderValue = function () {
-        return "Basic realm=\"" + this._realm + "\", charset=\"" + this._charset + "\"";
+        return "Basic realm=\"".concat(this._realm, "\", charset=\"").concat(this._charset, "\"");
     };
     /**
      * Set WWW-Authenticate Digest charset

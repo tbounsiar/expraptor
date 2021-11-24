@@ -16,6 +16,8 @@ var MemoryAuthenticator = /** @class */ (function () {
                 }
             }
             else if (user.password === password) {
+                // @ts-ignore
+                delete user.memoryAuthenticator;
                 return user;
             }
         }
@@ -49,15 +51,15 @@ var MemoryAuthenticator = /** @class */ (function () {
         var ha1 = password;
         // Algorithm.
         if (options.algorithm === "MD5-sess") {
-            ha1 = (0, crypto_utils_1.md5)(ha1 + ":" + options.nonce + ":" + options.cnonce);
+            ha1 = (0, crypto_utils_1.md5)("".concat(ha1, ":").concat(options.nonce, ":").concat(options.cnonce));
         }
         var response;
         // Quality of protection.
         if (options.qop) {
-            response = (0, crypto_utils_1.md5)(ha1 + ":" + options.nonce + ":" + options.nc + ":" + options.cnonce + ":" + options.qop + ":" + hash);
+            response = (0, crypto_utils_1.md5)("".concat(ha1, ":").concat(options.nonce, ":").concat(options.nc, ":").concat(options.cnonce, ":").concat(options.qop, ":").concat(hash));
         }
         else {
-            response = (0, crypto_utils_1.md5)(ha1 + ":" + options.nonce + ":" + hash);
+            response = (0, crypto_utils_1.md5)("".concat(ha1, ":").concat(options.nonce, ":").concat(hash));
         }
         // If calculated response is equal to client's response.
         return response === options.response;
@@ -66,41 +68,13 @@ var MemoryAuthenticator = /** @class */ (function () {
 }());
 exports.default = MemoryAuthenticator;
 var MemoryAuthentication = /** @class */ (function () {
-    function MemoryAuthentication(memoryAuthenticator, _login, _password) {
+    function MemoryAuthentication(memoryAuthenticator, login, password) {
         this.memoryAuthenticator = memoryAuthenticator;
-        this._login = _login;
-        this._password = _password;
-        this._roles = [];
-        this._authorities = [];
+        this.login = login;
+        this.password = password;
+        this.roles = [];
+        this.authorities = [];
     }
-    Object.defineProperty(MemoryAuthentication.prototype, "roles", {
-        get: function () {
-            return this._roles;
-        },
-        enumerable: false,
-        configurable: true
-    });
-    Object.defineProperty(MemoryAuthentication.prototype, "authorities", {
-        get: function () {
-            return this._authorities;
-        },
-        enumerable: false,
-        configurable: true
-    });
-    Object.defineProperty(MemoryAuthentication.prototype, "login", {
-        get: function () {
-            return this._login;
-        },
-        enumerable: false,
-        configurable: true
-    });
-    Object.defineProperty(MemoryAuthentication.prototype, "password", {
-        get: function () {
-            return this._password;
-        },
-        enumerable: false,
-        configurable: true
-    });
     /**
      * Add roles to user
      * @param {string[]} roles: roles list
@@ -110,7 +84,7 @@ var MemoryAuthentication = /** @class */ (function () {
         for (var _i = 0; _i < arguments.length; _i++) {
             roles[_i] = arguments[_i];
         }
-        this._roles = roles;
+        this.roles = roles;
         return this;
     };
     /**
@@ -122,7 +96,7 @@ var MemoryAuthentication = /** @class */ (function () {
         for (var _i = 0; _i < arguments.length; _i++) {
             authorities[_i] = arguments[_i];
         }
-        this._authorities = authorities;
+        this.authorities = authorities;
         return this;
     };
     /**

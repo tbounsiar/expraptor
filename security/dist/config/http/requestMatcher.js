@@ -32,7 +32,7 @@ var RequestMatcher = /** @class */ (function () {
         return this.authorizeRequests;
     };
     RequestMatcher.prototype.hasRole = function (role) {
-        this._permissions.push("hasRole(\"" + role + "\")");
+        this._permissions.push("hasRole(\"".concat(role, "\")"));
         return this;
     };
     RequestMatcher.prototype.hasAnyRoles = function () {
@@ -40,11 +40,11 @@ var RequestMatcher = /** @class */ (function () {
         for (var _i = 0; _i < arguments.length; _i++) {
             roles[_i] = arguments[_i];
         }
-        this._permissions.push("hasAnyRoles(" + roles.map(function (role) { return "\"" + role + "\""; }).join(", ") + ")");
+        this._permissions.push("hasAnyRoles(".concat(roles.map(function (role) { return "\"".concat(role, "\""); }).join(", "), ")"));
         return this;
     };
     RequestMatcher.prototype.hasAuthority = function (authority) {
-        this._permissions.push("hasAuthority(\"" + authority + "\")");
+        this._permissions.push("hasAuthority(\"".concat(authority, "\")"));
         return this;
     };
     RequestMatcher.prototype.hasAnyAuthorities = function () {
@@ -52,7 +52,7 @@ var RequestMatcher = /** @class */ (function () {
         for (var _i = 0; _i < arguments.length; _i++) {
             authorities[_i] = arguments[_i];
         }
-        this._permissions.push("hasAnyAuthorities(" + authorities.map(function (authority) { return "\"" + authority + "\""; }).join(", ") + ")");
+        this._permissions.push("hasAnyAuthorities(".concat(authorities.map(function (authority) { return "\"".concat(authority, "\""); }).join(", "), ")"));
         return this;
     };
     RequestMatcher.prototype.and = function () {

@@ -18,9 +18,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var webAuthenticationProvider_1 = __importDefault(require("./webAuthenticationProvider"));
 var crypto_utils_1 = require("../../../core/crypto-utils");
-var util_1 = require("@expraptor/core/dist/util/util");
+var utils_1 = require("../../../core/utils");
+var webAuthenticationProvider_1 = __importDefault(require("./webAuthenticationProvider"));
 var CREDENTIALS_REGEXP = /^digest\s(.*)/i;
 var PARAMS_SPLITER_REGEXP = /,(?=(?:[^"]|"[^"]*")*$)/;
 var STRIP_QUOTES_WHITESPACE_REGEXP = /(\w+)=["]?([^"]*)["]?$/;
@@ -97,7 +97,7 @@ var DigestWebAuthenticationProvider = /** @class */ (function (_super) {
             ++i;
         }
         if (this.validateNonce(options)) {
-            var password = (0, crypto_utils_1.md5)(request.method + ":" + options.uri);
+            var password = (0, crypto_utils_1.md5)("".concat(request.method, ":").concat(options.uri));
             return {
                 login: options.username,
                 password: password,
@@ -107,24 +107,24 @@ var DigestWebAuthenticationProvider = /** @class */ (function (_super) {
         return undefined;
     };
     DigestWebAuthenticationProvider.prototype.getAskHeaderValue = function () {
-        var nonce = (0, crypto_utils_1.md5)((0, util_1.generate)(10));
+        var nonce = (0, crypto_utils_1.md5)((0, utils_1.generate)(10));
         this.nonces.push([nonce, Date.now(), 0]);
-        var options = ["Digest realm=\"" + this._realm + "\""];
+        var options = ["Digest realm=\"".concat(this._realm, "\"")];
         if (this._domain) {
-            options.push("domain=\"" + this._domain + "\"");
+            options.push("domain=\"".concat(this._domain, "\""));
         }
-        options.push("nonce=\"" + nonce + "\"");
+        options.push("nonce=\"".concat(nonce, "\""));
         if (this._opaque) {
-            var opaque = (0, crypto_utils_1.md5)((0, util_1.generate)(10));
+            var opaque = (0, crypto_utils_1.md5)((0, utils_1.generate)(10));
             this.opaques.push([nonce, Date.now(), 0]);
-            options.push("opaque=\"" + opaque + "\"");
+            options.push("opaque=\"".concat(opaque, "\""));
         }
-        options.push("stale=\"" + this._stale + "\"");
+        options.push("stale=\"".concat(this._stale, "\""));
         if (this._algorithm) {
-            options.push("algorithm=\"" + this._algorithm + "\"");
+            options.push("algorithm=\"".concat(this._algorithm, "\""));
         }
         if (this._qop) {
-            options.push("qop=\"" + this._qop + "\"");
+            options.push("qop=\"".concat(this._qop, "\""));
         }
         return options.join(", ");
     };

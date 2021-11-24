@@ -5,7 +5,7 @@ A node js package that allow you to use typescript decorator to deploy your node
 ## Installation
 
 ```sh
-$ npm install @expraptor-web
+$ npm install @expraptor/web
 ```
 tsconfig.json:
 ```json

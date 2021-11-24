@@ -6,4 +6,5 @@ var AuthenticateType;
     AuthenticateType["BASIC"] = "Basic";
     AuthenticateType["DIGEST"] = "Digest";
     AuthenticateType["BEARER"] = "Bearer";
+    AuthenticateType["FORM_LOGIN"] = "FORM_LOGIN";
 })(AuthenticateType = exports.AuthenticateType || (exports.AuthenticateType = {}));

@@ -26,11 +26,6 @@ var Configurator = /** @class */ (function () {
     Configurator.prototype.setSecurityConfiguration = function (securityConfiguration) {
         this.securityConfiguration = securityConfiguration;
     };
-    Configurator.prototype.enableSecurity = function () {
-        if (this.securityConfiguration) {
-            this.securityConfiguration.enable(true);
-        }
-    };
     Configurator.prototype.register = function (route) {
         var router = express_1.default.Router();
         var store = route instanceof Function ? route.prototype : route;
@@ -44,11 +39,11 @@ var Configurator = /** @class */ (function () {
             }
             if (r.middlewares && r.middlewares.length > 0) {
                 // @ts-ignore
-                router[r.method].apply(router, __spreadArray([/*"$SECURED$", */ r.path], __spreadArray(__spreadArray([], r.middlewares, true), [r.handler], false), false));
+                router[r.method].apply(router, __spreadArray([r.path], __spreadArray(__spreadArray([], r.middlewares, true), [r.handler], false), false));
             }
             else {
                 // @ts-ignore
-                router[r.method](/*"$SECURED$", */ r.path, r.handler);
+                router[r.method](r.path, r.handler);
             }
         }
         this.application.use(store._router$.path, router);

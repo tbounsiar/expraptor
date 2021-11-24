@@ -16,14 +16,14 @@ var path_to_regexp_1 = require("path-to-regexp");
 var http_1 = require("./http");
 var auth_1 = require("./auth");
 var Configurator = /** @class */ (function () {
-    function Configurator(application) {
+    function Configurator(application, change, test) {
+        if (change === void 0) { change = true; }
+        if (test === void 0) { test = false; }
         this.application = application;
         this._httpSecurity = new http_1.HttpSecurity();
         this._authenticationBuilder = new auth_1.AuthenticationBuilder();
+        this.enable(change, test);
     }
-    Configurator.instance = function (application) {
-        return new Configurator(application);
-    };
     Configurator.prototype.httpSecurity = function () {
         return this._httpSecurity;
     };
@@ -32,7 +32,7 @@ var Configurator = /** @class */ (function () {
     };
     Configurator.prototype.secure = function (route, path) {
         var permission = { authenticated: false, authorization: "", permit: false };
-        var routePath = "" + path + (0, utils_1.getPath)(route.path);
+        var routePath = "".concat(path).concat((0, utils_1.getPath)(route.path));
         var middlewareText = template_1.forbiddenTemplate;
         var matchers = (0, utils_1.getMatchers)(this._httpSecurity, routePath, route.method);
         if (matchers.length > 0) {
@@ -64,29 +64,54 @@ var Configurator = /** @class */ (function () {
     /**
      * Enable security after configuration
      */
-    Configurator.prototype.enable = function (web) {
+    Configurator.prototype.enable = function (change, test) {
         var _this = this;
-        if (web === void 0) { web = false; }
-        this._authenticationBuilder.enable(this.application);
-        this._httpSecurity.enable(this.application);
-        if (!web) {
-            Object.values(core_1.HttpMethod).forEach(function (method) {
-                var oldMethod = _this.application[method];
+        if (change === void 0) { change = true; }
+        if (test === void 0) { test = false; }
+        var origins = {};
+        if (change) {
+            var methods = __spreadArray(["use"], Object.values(core_1.HttpMethod), true);
+            methods.forEach(function (method) {
+                var origin = _this.application[method];
+                origins[method] = origin;
+                // @ts-ignore
                 _this.application[method] = function () {
                     var args = [];
                     for (var _i = 0; _i < arguments.length; _i++) {
                         args[_i] = arguments[_i];
                     }
-                    if (typeof args[0] === "string" && typeof args[1] === "function") {
-                        var middleware = _this.middleware(args[0], method);
-                        if (middleware) {
-                            args.splice(1, 0, middleware);
-                        }
+                    // if (typeof args[0] === "string") {
+                    method = method === "use" || method === "all" ? undefined : method;
+                    // @ts-ignore
+                    var middleware = _this.middleware(args[0], method);
+                    if (middleware) {
+                        args.splice(1, 0, middleware);
                     }
-                    return oldMethod.call.apply(oldMethod, __spreadArray([_this.application], args, false));
+                    // }
+                    origin.call.apply(origin, __spreadArray([_this.application], args, false));
                 };
             });
         }
+        // @ts-ignore
+        var listen = this.application.listen;
+        // @ts-ignore
+        this.application.listen = function () {
+            var args = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                args[_i] = arguments[_i];
+            }
+            if (change) {
+                for (var key in origins) {
+                    _this.application[key] = origins[key];
+                }
+            }
+            _this._authenticationBuilder.enable(_this.application);
+            _this._httpSecurity.enable(_this.application);
+            // @ts-ignore
+            if (!test) {
+                listen.call.apply(listen, __spreadArray([_this.application], args, false));
+            }
+        };
     };
     Configurator.prototype.middleware = function (path, method) {
         if (!this._authenticationBuilder.isStateless()) {

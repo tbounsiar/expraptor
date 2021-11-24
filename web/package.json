@@ -1,6 +1,6 @@
 {
   "name": "@expraptor/web",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Simple library to deploy node express using typescript decorators",
   "license": "MIT",
   "keywords": [
@@ -8,7 +8,8 @@
     "express",
     "web",
     "decorator",
-    "annotation"
+    "annotation",
+    "server"
   ],
   "repository": {
     "type": "git",
@@ -27,6 +28,7 @@
   "typings": "dist/index.d.ts",
   "homepage": "https://github.com/tbounsiar/expraptor/tree/master/web#readme",
   "dependencies": {
-    "@expraptor/core": "1.0.0"
+    "@expraptor/core": "^1.0.1",
+    "express": "^4.17.1"
   }
 }
