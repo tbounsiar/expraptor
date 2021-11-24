@@ -33,7 +33,6 @@ sec.httpSecurity().authorize()
     .and()
     .requestMatcher("/").permitAll()
     .anyRequest().authenticated();
-sec.enable();
 
 app.get("/", (req, res) => {
     res.send("Welcome, no authentication needed.");
@@ -90,29 +89,62 @@ class UserAuthenticator implements security.auth.Authenticator {
 
 sec.buildAuth().authenticator(new UserAuthenticator());
 ```
-### Stateless using JWT Token
-#### First install jsonwebtoken
-```sh
-$ npm install jsonwebtoken
-```
-#### And
+
+### Stateless using WWW Basic Authentication
+
 ```typescript
 import express from "express";
 import security from "@expraptor/security";
-import session from "express-session";
 
 const app = express();
-app.use(session({secret: "secret"}));
-app.use(express.urlencoded());
+const sec = security(app);
+sec.buildAuth()
+    .basicAuthentication().realm("Basic Authentication App").and()
+    .inMemoryUser()
+    .addUser("john", "john").withRoles("ADMIN").and()
+    .addUser("jane", "jane").withAuthorities("CLIENT").and()
+    .addUser("bob", "secret");
+
+```
+### Stateless using WWW Digest Authentication
+
+```typescript
+import express from "express";
+import security from "@expraptor/security";
+
+const app = express();
+const sec = security(app);
+sec.buildAuth()
+    .digestAuthentication().realm("Digest Authentication App").and()
+    .inMemoryUser().digest()
+    .addUser("john", "79fa2042db7866f3dbe977ef6be1df34").withRoles("ADMIN").and()
+    .addUser("jane", "101e4095953a37653f29fe0a92ef3e04").withAuthorities("CLIENT").and()
+    .addUser("bob", "92ba3d31cfb6c840bd41be8dbf057d89");
+;
+```
+
+### Stateless using JWT Token
+
+#### First install jsonwebtoken
+
+```sh
+$ npm install jsonwebtoken
+```
+
+#### And
+
+```typescript
+import express from "express";
+import security from "@expraptor/security";
+
+const app = express();
 const port = 3000;
 const sec = security(app);
-sec.buildAuth().stateless()
-    .jwtTokenAuthentication("your-256-bit-secret");
+sec.buildAuth().jwtTokenAuthentication("your-256-bit-secret");
 
 sec.httpSecurity().authorize()
     .requestMatcher("/").permitAll()
     .anyRequest().authenticated();
-sec.enable();
 
 app.get("/", (req, res) => {
     res.send("WELCOME HOME");
@@ -124,11 +156,14 @@ app.listen(port, () => {
     console.log(`server is listening on http://localhost:${port}`);
 });
 ```
-Now to test this example got to https://jwt.io/ and generate a jwt using your-256-bit-secret and put this token in request Authorization header. 
-You can use curl or postman or any http client to test this example.
-#### Put Roles and Authorities 
-If you want to use roles and authorities in your Token, you have to define a JwtAuthorization to extract them from the decoded token.
-Suppose that your decoded token is
+
+Now to test this example got to https://jwt.io/ and generate a jwt using your-256-bit-secret and put this token in
+request Authorization header. You can use curl or postman or any http client to test this example.
+
+#### Put Roles and Authorities
+
+If you want to use roles and authorities in your Token, you have to define a JwtAuthorization to extract them from the
+decoded token. Suppose that your decoded token is
 
 ```json
 {
@@ -136,12 +171,18 @@ Suppose that your decoded token is
   "name": "John Doe",
   "iat": 1516239022,
   "claims": {
-    "roles": ["USER"],
-    "authorities": ["CLIENT"]
+    "roles": [
+      "USER"
+    ],
+    "authorities": [
+      "CLIENT"
+    ]
   }
 }
 ```
+
 Then your JwtAuthorization
+
 ```typescript
 class JwtAuthorizationImpl implements security.auth.token.jwt.JwtAuthorization {
 
@@ -153,8 +194,8 @@ class JwtAuthorizationImpl implements security.auth.token.jwt.JwtAuthorization {
         return decoded.claims.roles;
     }
 }
-sec.buildAuth().stateless()
-    .jwtTokenAuthentication("your-256-bit-secret")
+
+sec.buildAuth().jwtTokenAuthentication("your-256-bit-secret")
     .jwtAuthorization(new JwtAuthorizationImpl());
 
 sec.httpSecurity().authorize()
@@ -162,7 +203,6 @@ sec.httpSecurity().authorize()
     .requestMatcher("/admin").hasRole("ADMIN").and()
     .requestMatcher("/client/**").hasAuthority("CLIENT").and()
     .anyRequest().authenticated();
-sec.enable();
 
 app.get("/", (req, res) => {
     res.send("WELCOME HOME");

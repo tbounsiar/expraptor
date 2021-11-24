@@ -321,27 +321,70 @@ declare namespace security.auth {
 
         private constructor();
 
-        stateless(): AuthenticationBuilder;
-
+        /**
+         * Get MemoryAuthenticator Config
+         * @return security.auth.impl.MemoryAuthenticator
+         */
         inMemoryUser(): security.auth.impl.MemoryAuthenticator;
 
+        /**
+         * Get TokenAuthenticationProvider Config
+         * @return security.auth.token.TokenAuthenticationProvider
+         */
         tokenAuthenticationProvider(): security.auth.token.TokenAuthenticationProvider;
 
+        /**
+         * Get JwtTokenAuthenticationProvider Config
+         * @param {string} secret: JWT Token Secret
+         * @return security.auth.token.jwt.JwtTokenAuthenticationProvider
+         */
         jwtTokenAuthentication(secret: string): security.auth.token.jwt.JwtTokenAuthenticationProvider;
 
+        /**
+         * Get BasicAuthenticationProvider Config
+         * @return security.auth.impl.BasicAuthenticationProvider
+         */
         basicAuthentication(): security.auth.impl.BasicAuthenticationProvider;
 
+        /**
+         * Get DigestAuthenticationProvider Config
+         * @return security.auth.impl.DigestAuthenticationProvider
+         */
         digestAuthentication(): security.auth.impl.DigestAuthenticationProvider;
 
+        /**
+         * Get FormLogin config
+         * @return FormLogin
+         */
         formLogin(): FormLogin;
 
-        errorHandling(errorHandling: AuthErrorHandling): AuthenticationBuilder;
+        /**
+         * Set The Authentication Error Handling Object
+         * @param {AuthErrorHandling} errorHandling: instance of class implementing {AuthErrorHandling}
+         * @return {this}
+         */
+        errorHandling(errorHandling: AuthErrorHandling): this;
 
-        authenticationProvider(authenticationProvider: AuthenticationProvider): AuthenticationBuilder;
+        /**
+         * Set The Authentication Provider Object
+         * @param {AuthenticationProvider} authenticationProvider: instance of class implementing {AuthenticationProvider}
+         * @return {this}
+         */
+        authenticationProvider(authenticationProvider: AuthenticationProvider): this;
 
-        authenticator(authenticator: Authenticator): AuthenticationBuilder;
+        /**
+         * Set The Authenticator Object
+         * @param {Authenticator} authenticator: instance of class implementing {Authenticator}
+         * @return {this}
+         */
+        authenticator(authenticator: Authenticator): this;
 
-        redirectTo(url: string): AuthenticationBuilder;
+        /**
+         * Set The Redirect URL
+         * @param {string} url: Redirect URL Value
+         * @return {this}
+         */
+        redirectTo(url: string): this;
     }
 }
 
@@ -354,17 +397,19 @@ declare namespace security.auth.impl {
         /**
          * Set WWW-Authenticate realm
          * @param {string} realm realm value
-         * @return WebAuthenticationProvider
+         * @return this
          */
         realm(realm: string): this;
 
         /**
          * Activate WWW-Authenticate proxy authentication
+         * @return this
          */
         proxy(): this;
 
         /**
          * Get Authentication Builder config
+         * @return AuthenticationBuilder
          */
         and(): AuthenticationBuilder;
     }
@@ -431,11 +476,13 @@ declare namespace security.auth.impl {
         /**
          * Set if password is digest.
          * To activate in case of digestAuthentication
+         * @return this
          */
-        digest(): MemoryAuthenticator;
+        digest(): this;
 
         /**
          * Get AuthenticationBuilder configuration
+         * @return AuthenticationBuilder
          */
         and(): AuthenticationBuilder;
     }
@@ -448,17 +495,20 @@ declare namespace security.auth.impl {
         /**
          * Add roles to MemoryAuthentication
          * @param {string[]} roles: The roles list.
+         * @return this
          */
-        withRoles(...roles: string[]): MemoryAuthentication;
+        withRoles(...roles: string[]): this;
 
         /**
          * Add authorities to MemoryAuthentication
          * @param {string[]} authorities: The authorities list.
+         * @return this
          */
-        withAuthorities(...authorities: string[]): MemoryAuthentication;
+        withAuthorities(...authorities: string[]): this;
 
         /**
          * Get MemoryAuthenticator configuration
+         * @return MemoryAuthenticator
          */
         and(): MemoryAuthenticator;
     }
@@ -480,21 +530,18 @@ declare namespace security.auth.token {
     /**
      * Provide a token authentication provider
      */
-    export class TokenAuthenticationProvider {
+    export class TokenAuthenticationProvider extends security.auth.impl.WebAuthenticationProvider {
 
         /**
          * Set TokenParser
          * @param {TokenParser} tokenParser: The implemented TokenParser value
+         * @return this
          */
-        tokenParser(tokenParser: TokenParser): TokenAuthenticationProvider;
-
-        /**
-         * Set if authorization bearer
-         */
-        bearer(): TokenAuthenticationProvider;
+        tokenParser(tokenParser: TokenParser): this;
 
         /**
          * Get AuthenticationBuilder configuration
+         * @return AuthenticationBuilder
          */
         and(): AuthenticationBuilder;
     }
@@ -530,8 +577,9 @@ declare namespace security.auth.token.jwt {
         /**
          * Set JwtAuthorization to extract roles and authorities from token
          * @param {JwtAuthorization} jwtAuthorization: The implemented JwtAuthorization value
+         * @return this
          */
-        jwtAuthorization(jwtAuthorization: JwtAuthorization): JwtTokenAuthenticationProvider;
+        jwtAuthorization(jwtAuthorization: JwtAuthorization): this;
     }
 }
 
