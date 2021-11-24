@@ -16,13 +16,11 @@ var path_to_regexp_1 = require("path-to-regexp");
 var http_1 = require("./http");
 var auth_1 = require("./auth");
 var Configurator = /** @class */ (function () {
-    function Configurator(application, change, test) {
-        if (change === void 0) { change = true; }
-        if (test === void 0) { test = false; }
+    function Configurator(application, change) {
         this.application = application;
         this._httpSecurity = new http_1.HttpSecurity();
         this._authenticationBuilder = new auth_1.AuthenticationBuilder();
-        this.enable(change, test);
+        this.enable(change);
     }
     Configurator.prototype.httpSecurity = function () {
         return this._httpSecurity;
@@ -64,10 +62,8 @@ var Configurator = /** @class */ (function () {
     /**
      * Enable security after configuration
      */
-    Configurator.prototype.enable = function (change, test) {
+    Configurator.prototype.enable = function (change) {
         var _this = this;
-        if (change === void 0) { change = true; }
-        if (test === void 0) { test = false; }
         var origins = {};
         if (change) {
             var methods = __spreadArray(["use"], Object.values(core_1.HttpMethod), true);
@@ -107,10 +103,7 @@ var Configurator = /** @class */ (function () {
             }
             _this._authenticationBuilder.enable(_this.application);
             _this._httpSecurity.enable(_this.application);
-            // @ts-ignore
-            if (!test) {
-                listen.call.apply(listen, __spreadArray([_this.application], args, false));
-            }
+            listen.call.apply(listen, __spreadArray([_this.application], args, false));
         };
     };
     Configurator.prototype.middleware = function (path, method) {

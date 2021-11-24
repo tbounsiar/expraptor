@@ -1,6 +1,6 @@
 {
   "name": "@expraptor/security",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "Simple library to secure node express application",
   "license": "MIT",
   "keywords": [
@@ -9,7 +9,10 @@
     "security",
     "authetication",
     "decorator",
-    "annotation"
+    "annotation",
+    "roles",
+    "authorities",
+    "management"
   ],
   "repository": {
     "type": "git",
